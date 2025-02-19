@@ -36,6 +36,8 @@ jobs:
           
           BASELINE=$(git merge-base $SEMGREP_GITHUB_REF HEAD)
           echo "baseline commit: $BASELINE"
+          echo "GITHUB_REF: $SEMGREP_GITHUB_REF"
+          echo "HEAD: HEAD"
           semgrep ci --baseline-commit="$BASELINE" --verbose
         env:
           # Connect to Semgrep Cloud Platform through your SEMGREP_APP_TOKEN.
