@@ -34,7 +34,7 @@ jobs:
 
           git config --global --add safe.directory /__w/Newone/Newone
           
-          BASELINE=$(git merge-base $SEMGREP_GITHUB_REF)
+          BASELINE=$(git merge-base $SEMGREP_GITHUB_REF HEAD)
           echo "baseline commit: $BASELINE"
           semgrep ci --baseline-commit="$BASELINE" --verbose
         env:
