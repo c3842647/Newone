@@ -33,11 +33,11 @@ jobs:
       - run: |
 
           git config --global --add safe.directory /__w/Newone/Newone
-          
-          BASELINE=$(git merge-base $SEMGREP_GITHUB_REF HEAD)
+
+          BASELINE=$(git rev-parse HEAD~1)
           echo "baseline commit: $BASELINE"
           echo "GITHUB_REF: $SEMGREP_GITHUB_REF"
-          echo "HEAD: HEAD"
+          echo "HEAD: $(git rev-parse HEAD)"
           semgrep ci --baseline-commit="$BASELINE" --verbose
         env:
           # Connect to Semgrep Cloud Platform through your SEMGREP_APP_TOKEN.
