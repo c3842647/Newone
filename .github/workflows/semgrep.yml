@@ -31,6 +31,9 @@ jobs:
             fetch-depth: 0
       # Run the "semgrep ci" command on the command line of the docker image.
       - run: |
+
+          git config --global --add safe.directory /__w/Newone/Newone
+          
           BASELINE=$(git merge-base $SEMGREP_GITHUB_REF)
           echo "baseline commit: $BASELINE"
           semgrep ci --baseline-commit="$BASELINE" --verbose
