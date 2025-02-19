@@ -1,9 +1,16 @@
 # Name of this GitHub Actions workflow.
 name: SemgrepDiff
 
-on: 
-  schedule:
-    - cron: '20 17 * * *' 
+on:
+  # Scan changed files in PRs (diff-aware scanning):
+  #push:
+    #branches:
+      #- 'feature_**'
+      #- 'bug_**'
+  # Schedule the CI job (this method uses cron syntax):
+  #schedule:
+    #- cron: '20 17 * * *' # Sets Semgrep to scan every day at 17:20 UTC.
+    # It is recommended to change the schedule to a random time.
 jobs:
   semgrepdiff:
     # User definable name of this GitHub Actions job.
@@ -21,8 +28,13 @@ jobs:
     steps:
       # Fetch project source with GitHub Actions Checkout.
       - uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
       # Run the "semgrep ci" command on the command line of the docker image.
-      - run: semgrep ci --baseline-commit=$(git merge-base release-2024.09 $SEMGREP_GITHUB_REF) --verbose
+      - run: |
+          BASELINE=$(git merge-base release-2024.09 $SEMGREP_GITHUB_REF)
+          echo "baseline commit: $BASELINE"
+          semgrep ci --baseline-commit="$BASELINE" --verbose
         env:
           # Connect to Semgrep Cloud Platform through your SEMGREP_APP_TOKEN.
           # Generate a token from Semgrep Cloud Platform > Settings
