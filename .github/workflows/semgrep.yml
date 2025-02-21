@@ -40,6 +40,9 @@ jobs:
       # Fetch project source with GitHub Actions Checkout.
       - uses: actions/checkout@v4
 
+      - name: Mark the directory as safe for Git
+        run: |
+          git config --global --add safe.directory /__w/Newone/Newone
       # Check if this is a direct commit to main (full scan) or a pull request (diff scan):
       - name: Run diff or full scan based on context
         run: |
