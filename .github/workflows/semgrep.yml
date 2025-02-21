@@ -40,14 +40,26 @@ jobs:
       # Fetch project source with GitHub Actions Checkout.
       - uses: actions/checkout@v4
 
-      # Check if this is a direct commit to main (full scan) or a pull request (diff scan):
+
+      - name: Mark the directory as safe for Git
+        run: |
+          git config --global --add safe.directory /__w/Newone/Newone
+
+      # Run diff or full scan based on context
       - name: Run diff or full scan based on context
         run: |
           # Check if it's a direct commit to main/master branch
           if [[ "$GITHUB_REF" == "refs/heads/main" || "$GITHUB_REF" == "refs/heads/master" ]]; then
             echo "Direct commit to main/master branch detected."
-            git config --global --add safe.directory /__w/Newone/Newone
-            BASELINE=$(git rev-parse HEAD~1)
+            
+            # Check if the previous commit exists (for cases when this is the first commit)
+            BASELINE=$(git rev-parse HEAD~1 2>/dev/null || echo "no-previous-commit")
+            
+            if [[ "$BASELINE" == "no-previous-commit" ]]; then
+              echo "No previous commit found. Using HEAD as baseline for the diff scan."
+              BASELINE=$(git rev-parse HEAD) # Use current commit as baseline if no previous commit exists
+            fi
+            
             echo "baseline commit: $BASELINE"
             echo "GITHUB_REF: $SEMGREP_GITHUB_REF"
             echo "HEAD: $(git rev-parse HEAD)"
