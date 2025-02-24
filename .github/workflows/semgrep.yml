@@ -59,7 +59,9 @@ jobs:
             echo "Direct commit to main/master branch detected."
             BASELINE=$(git log --format="%H" -n 2 origin/main | tail -n 1)
             echo "baseline commit: $BASELINE"
+            printenv
             semgrep ci --baseline-commit=$BASELINE
+            printenv
             
           elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
             # It's a PR, perform a diff scan
