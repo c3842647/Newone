@@ -36,7 +36,8 @@ jobs:
     steps:
       # Fetch project source with GitHub Actions Checkout.
       - uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
 
       - name: Mark the directory as safe for Git
         run: |
@@ -56,7 +57,6 @@ jobs:
           
           if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "Direct commit to main/master branch detected."
-            git fetch --unshallow 
             BASELINE=$(git merge-base HEAD~1 $SEMGREP_GITHUB_REF)
             echo "baseline commit: $BASELINE"
             semgrep ci --baseline-commit="$BASELINE" --verbose
