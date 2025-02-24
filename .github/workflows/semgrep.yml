@@ -59,7 +59,7 @@ jobs:
             echo "Direct commit to main/master branch detected."
             BASELINE=$(git log --format="%H" -n 2 origin/main | tail -n 1)
             echo "baseline commit: $BASELINE"
-            BRANCH_NAME = "$GITHUB_SHA"
+            BRANCH_NAME = $(git log -1)
             printenv
             SEMGREP_BRANCH="$BRANCH_NAME" semgrep ci --baseline-commit=$BASELINE
             printenv
