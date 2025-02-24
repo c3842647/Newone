@@ -31,6 +31,7 @@ jobs:
 
     # Skip any PR created by dependabot to avoid permission issues:
     if: (github.actor != 'dependabot[bot]')
+    
 
     steps:
       # Fetch project source with GitHub Actions Checkout.
@@ -42,12 +43,6 @@ jobs:
           git config --global --add safe.directory /__w/Newone/Newone
 
       # Run diff or full scan based on context
-
-      - name: Check if commit is a merge commit
-        if: contains(github.event.head_commit.message, 'Merge pull request')
-        run: |
-          echo "A pull request was merged into the main branch!"
-          exit 0
           
       - name: Run diff or full scan based on context
         run: |
