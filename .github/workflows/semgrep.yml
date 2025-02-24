@@ -3,7 +3,6 @@ name: Semgrep
 on:
   # Scan changed files in PRs (diff-aware scanning):
   pull_request: {}
-  
   push:
     branches:
       - main
@@ -38,11 +37,11 @@ jobs:
       # Fetch project source with GitHub Actions Checkout.
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 20
 
       - name: Mark the directory as safe for Git
         run: |
-          git config --global --add safe.directory /__w/Newone/Newone
+          git config --global --add safe.directory '*'
           
       - name: Skip scan if the commit is a merge commit
         if: contains(github.event.head_commit.message, 'Merge pull request')
@@ -58,9 +57,9 @@ jobs:
           
           if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "Direct commit to main/master branch detected."
-            BASELINE=$(git merge-base HEAD~1 $SEMGREP_GITHUB_REF)
+            BASELINE=$(git log --format="%H" -n 2 origin/main | tail -n 1)
             echo "baseline commit: $BASELINE"
-            semgrep ci --baseline-commit="$BASELINE" --verbose
+            semgrep ci --baseline-commit=$BASELINE
             
           elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
             # It's a PR, perform a diff scan
@@ -71,5 +70,3 @@ jobs:
           fi
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-          SEMGREP_GITHUB_SHA: ${{ github.sha }}
-          SEMGREP_GITHUB_REF: ${{ github.ref }}
