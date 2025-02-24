@@ -53,7 +53,14 @@ jobs:
       - name: Run diff or full scan based on context
         run: |
           # Check if it's a direct commit to main/master branch
-          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+          
+          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+            echo "Direct commit to main/master branch detected."
+            BASELINE=$(git merge-base main $SEMGREP_GITHUB_REF)
+            echo "baseline commit: $BASELINE"
+            semgrep ci --baseline-commit="$BASELINE" --verbose
+            
+          elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
             # It's a PR, perform a diff scan
             echo "PR detected, running diff scan..."
             semgrep ci
@@ -62,3 +69,5 @@ jobs:
           fi
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+          SEMGREP_GITHUB_SHA: ${{ github.sha }}
+          SEMGREP_GITHUB_REF: ${{ github.ref }}
