@@ -58,12 +58,9 @@ jobs:
           if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "Direct commit to main/master branch detected."
             BASELINE=$(git log --format="%H" -n 2 origin/main | tail -n 1)
-            SHORT_SHA="${GITHUB_SHA:0:10}  # Get first 10 characters of the SHA
-            # COMBINED_VARIABLE="${GITHUB_REF_NAME}-${SHORT_SHA}"
             echo "baseline commit: $BASELINE"
-            echo "BRANCH_NAME": $SHORT_SHA"
             printenv
-            SEMGREP_BRANCH="$SHORT_SHA" semgrep ci --baseline-commit=$BASELINE
+            semgrep ci --baseline-commit=$BASELINE
             printenv
             
           elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
