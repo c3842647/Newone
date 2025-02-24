@@ -56,6 +56,7 @@ jobs:
           
           if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "Direct commit to main/master branch detected."
+            git fetch --unshallow 
             BASELINE=$(git merge-base origin/main $SEMGREP_GITHUB_REF)
             echo "baseline commit: $BASELINE"
             semgrep ci --baseline-commit="$BASELINE" --verbose
