@@ -58,7 +58,7 @@ jobs:
           if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
             echo "Direct commit to main/master branch detected."
             BASELINE=$(git log --format="%H" -n 2 origin/main | tail -n 1)
-            SHORT_BASELINE="${BASELINE:0:10}"
+            SHORT_BASELINE="main-${BASELINE:0:10}"
             echo "baseline commit: $BASELINE"
             printenv
             SEMGREP_BRANCH="$SHORT_BASELINE" semgrep ci --baseline-commit=$BASELINE
