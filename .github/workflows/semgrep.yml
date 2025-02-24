@@ -31,7 +31,7 @@ jobs:
 
     # Skip any PR created by dependabot to avoid permission issues:
     if: (github.actor != 'dependabot[bot]')
-    
+
 
     steps:
       # Fetch project source with GitHub Actions Checkout.
@@ -41,7 +41,13 @@ jobs:
       - name: Mark the directory as safe for Git
         run: |
           git config --global --add safe.directory /__w/Newone/Newone
-
+          
+      - name: Skip scan if the commit is a merge commit
+        if: contains(github.event.head_commit.message, 'Merge pull request')
+        run: |
+          echo "A pull request was merged into the main branch, skipping scan."
+          exit 0
+      
       # Run diff or full scan based on context
           
       - name: Run diff or full scan based on context
